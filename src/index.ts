@@ -4,11 +4,16 @@ import { User } from './User';
 import { Repo } from './Repo';
 
 let svc = new GithubApiService();
-svc.getuserInfo('chasemac', (user: User) => {
-  svc.getRepos('chasemac', (repos: Repo[]) => {
-    let sortedRepos = _.sortBy(repos, [(repo: Repo) => repo.forkCount * -1]);
-    let filteredRepos = _.take(sortedRepos, 5);
-    user.repos = filteredRepos;
-    console.log(user);
+if (process.argv.length < 3) {
+  console.log('pass in a username as an argument');
+} else {
+  let username = process.argv[2];
+  svc.getuserInfo(username, (user: User) => {
+    svc.getRepos(username, (repos: Repo[]) => {
+      let sortedRepos = _.sortBy(repos, [(repo: Repo) => repo.forkCount * -1]);
+      let filteredRepos = _.take(sortedRepos, 5);
+      user.repos = filteredRepos;
+      console.log(user);
+    });
   });
-});
+}

@@ -10,11 +10,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var GithubApiService_1 = require("./GithubApiService");
 var _ = __importStar(require("lodash"));
 var svc = new GithubApiService_1.GithubApiService();
-svc.getuserInfo('chasemac', function (user) {
-    svc.getRepos('chasemac', function (repos) {
-        var sortedRepos = _.sortBy(repos, [function (repo) { return repo.forkCount * -1; }]);
-        var filteredRepos = _.take(sortedRepos, 5);
-        user.repos = filteredRepos;
-        console.log(user);
+if (process.argv.length < 3) {
+    console.log('pass in a username as an argument');
+}
+else {
+    var username_1 = process.argv[2];
+    svc.getuserInfo(username_1, function (user) {
+        svc.getRepos(username_1, function (repos) {
+            var sortedRepos = _.sortBy(repos, [function (repo) { return repo.forkCount * -1; }]);
+            var filteredRepos = _.take(sortedRepos, 5);
+            user.repos = filteredRepos;
+            console.log(user);
+        });
     });
-});
+}
